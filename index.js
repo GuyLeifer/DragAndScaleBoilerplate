@@ -13,27 +13,31 @@ function mousedown(e) {
   let prevX = e.clientX;
   let prevY = e.clientY;
 
-      console.log("prevX: ", prevX, "prevY: ", prevY);
-
+  let oldX = e.clientX;
+  let oldY = e.clientY;
 
   function mousemove(e) {
     if (!isResizing) {
       let newX = prevX - e.clientX;
       let newY = prevY - e.clientY;
 
-    // console.log("newX: ", newX, "prevX: ", prevX,"newY: ", newY, "prevY: ", prevY);
-
       const rectMain = main.getBoundingClientRect();
       const rectPlayground = playground.getBoundingClientRect();
 
-      main.style.left = rectMain.left - newX + "px";
-      main.style.top = rectMain.top - newY + "px";
+        if(rectMain.right < rectPlayground.right && rectMain.left > rectPlayground.left) {
+            main.style.left = rectMain.left - newX + "px";
+        }
+        
+      if(rectMain.bottom < rectPlayground.bottom && rectMain.top > rectPlayground.top) {
+          main.style.top = rectMain.top - newY + "px";
+        }
 
       prevX = e.clientX;
       prevY = e.clientY;
     }
   }
 
+  
   function mouseup() {
     window.removeEventListener("mousemove", mousemove);
     window.removeEventListener("mouseup", mouseup);
