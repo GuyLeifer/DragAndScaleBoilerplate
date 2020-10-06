@@ -13,8 +13,6 @@ function mousedown(e) {
   let prevX = e.clientX;
   let prevY = e.clientY;
 
-  let oldX = e.clientX;
-  let oldY = e.clientY;
 
   function mousemove(e) {
     if (!isResizing) {
@@ -23,14 +21,15 @@ function mousedown(e) {
 
       const rectMain = main.getBoundingClientRect();
       const rectPlayground = playground.getBoundingClientRect();
+      const moveX = rectMain.left - newX;
+      const moveY = rectMain.top - newY;
 
-        if(rectMain.right < rectPlayground.right && rectMain.left > rectPlayground.left) {
-            main.style.left = rectMain.left - newX + "px";
-        }
-        
-      if(rectMain.bottom < rectPlayground.bottom && rectMain.top > rectPlayground.top) {
-          main.style.top = rectMain.top - newY + "px";
-        }
+      if(moveX > rectPlayground.left && moveX < rectPlayground.right - rectMain.width ){
+        main.style.left = moveX +"px";
+      }
+      if(moveY > rectPlayground.top && moveY < rectPlayground.bottom - rectMain.height){
+          main.style.top = moveY +"px";
+      }
 
       prevX = e.clientX;
       prevY = e.clientY;
@@ -62,24 +61,36 @@ for (let resizer of resizers) {
 
     function mousemove(e) {
       const rectMain = main.getBoundingClientRect();
-    //   const rectPlayground = playground.getBoundingClientRect();
+      const rectPlayground = playground.getBoundingClientRect();
 
-      if (currentResizer.classList.contains("se")) {
-        main.style.width = rectMain.width - (prevX - e.clientX) + "px";
-        main.style.height = rectMain.height - (prevY - e.clientY) + "px";
-      } else if (currentResizer.classList.contains("sw")) {
-        main.style.width = rectMain.width + (prevX - e.clientX) + "px";
-        main.style.height = rectMain.height - (prevY - e.clientY) + "px";
-        main.style.left = rectMain.left - (prevX - e.clientX) + "px";
-      } else if (currentResizer.classList.contains("ne")) {
-        main.style.width = rectMain.width - (prevX - e.clientX) + "px";
-        main.style.height = rectMain.height + (prevY - e.clientY) + "px";
-        main.style.top = rectMain.top - (prevY - e.clientY) + "px";
-      } else {
-        main.style.width = rectMain.width + (prevX - e.clientX) + "px";
-        main.style.height = rectMain.height + (prevY - e.clientY) + "px";
-        main.style.top = rectMain.top - (prevY - e.clientY) + "px";
-        main.style.left = rectMain.left - (prevX - e.clientX) + "px";
+      const resizeMoveLeft = rectMain.left - (prevX - e.clientX);
+      const resizeMoveBottom = rectMain.bottom - (prevY - e.clientY) ;
+      const resizeMoveTop = rectMain.top - (prevY - e.clientY);
+      const resizeMoveRight = rectMain.right - (prevX - e.clientX);
+      
+      if(
+        resizeMoveLeft > rectPlayground.left && 
+        resizeMoveTop > rectPlayground.top && 
+        resizeMoveBottom < rectPlayground.bottom && 
+        resizeMoveRight < rectPlayground.right) {
+
+        if (currentResizer.classList.contains("se")) {
+          main.style.width = rectMain.width - (prevX - e.clientX) + "px";
+          main.style.height = rectMain.height - (prevY - e.clientY) + "px";
+        } else if (currentResizer.classList.contains("sw")) {
+          main.style.width = rectMain.width + (prevX - e.clientX) + "px";
+          main.style.height = rectMain.height - (prevY - e.clientY) + "px";
+          main.style.left = rectMain.left - (prevX - e.clientX) + "px";
+        } else if (currentResizer.classList.contains("ne")) {
+          main.style.width = rectMain.width - (prevX - e.clientX) + "px";
+          main.style.height = rectMain.height + (prevY - e.clientY) + "px";
+          main.style.top = rectMain.top - (prevY - e.clientY) + "px";
+        } else {
+          main.style.width = rectMain.width + (prevX - e.clientX) + "px";
+          main.style.height = rectMain.height + (prevY - e.clientY) + "px";
+          main.style.top = rectMain.top - (prevY - e.clientY) + "px";
+          main.style.left = rectMain.left - (prevX - e.clientX) + "px";
+        }
       }
 
       prevX = e.clientX;
